@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from one_pkg.srv import *
-from one_pkg.msg import *
+from visy_neopixel_pkg.srv import *
+from visy_neopixel_pkg.msg import *
 import rospy
 
 class StatusBarNode:

@@ -13,7 +13,7 @@ try:
 except:
     print(BOARDERRROR)
 
-from one_pkg.msg import *
+from visy_neopixel_pkg.msg import *
 from std_msgs.msg import String
 
 class NeopixelNode:
