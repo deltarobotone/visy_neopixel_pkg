@@ -1,0 +1,27 @@
+#request constants
+int32 UNKNOWN = 0
+int32 FULL = 10
+int32 BLINK_FULL = 20
+int32 BLINK_FULL_SLOW = 21
+int32 FADE_FULL = 30
+int32 FADE_FULLL_SLOW = 31
+int32 SPIN_SINGLE_CW = 40
+int32 SPIN_SINGLE_CW_SLOW = 41
+int32 SPIN_SINGLE_INV_CW = 50
+int32 SPIN_SINGLE_INV_CW_SLOW = 51
+int32 SPIN_ONE_FREE_CW = 60
+int32 SPIN_ONE_FREE_CW_SLOW = 61
+int32 SPIN_ONE_FREE_CW_FAST = 62
+int32 SPIN_DOUBLE_TOP = 70
+int32 OFF = 80
+#request fields
+int32 ctrl
+uint8 r
+uint8 g
+uint8 b
+uint8 w
+---
+#response constants
+
+#response fields
+int32 state

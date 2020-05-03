@@ -1,0 +1,22 @@
+#request constants
+int32 UNKNOWN = 0
+int32 FULL = 10
+int32 FLOW_SINGLE_CW = 20
+int32 FLOW_SINGLE_CW_SLOW = 21
+int32 FLOW_SINGLE_INV_CW = 30
+int32 FLOW_SINGLE_INV_CW_SLOW = 31
+int32 FLOW_ONE_FREE_CW = 40
+int32 FLOW_ONE_FREE_CW_SLOW = 41
+int32 FLOW_ONE_FREE_CW_FAST = 42
+int32 FLOW_DOUBLE_TOP = 50
+#request fields
+int32 ctrl
+uint8 r
+uint8 g
+uint8 b
+uint8 w
+---
+#response constants
+
+#response fields
+int32 state
