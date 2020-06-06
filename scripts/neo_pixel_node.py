@@ -21,7 +21,7 @@ class NeopixelNode:
     def __init__(self):
         rospy.Subscriber('light_ring_pixels', Neopixels, self.__ctrlLightRingPixelsCallback)
         rospy.Subscriber('status_bar_pixels', Neopixels, self.__ctrlStatusBarPixelsCallback)
-        self.__pub = rospy.Publisher('neo_pixel_node_state', String, queue_size=10)
+        self.__pub = rospy.Publisher('neo_pixel_node_state', String, queue_size=1)
         self.__state = UNKNOWN
         try:
             self.__pixels = neopixel.NeoPixel(board.D21, 20 ,pixel_order=(1,0,2,3))

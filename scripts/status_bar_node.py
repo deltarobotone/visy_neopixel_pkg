@@ -10,7 +10,7 @@ class StatusBarNode:
         self.__msg = Neopixels()
         self.__numPixels = 8
         self.__srv = rospy.Service('ctrl_status_bar', StatusBar, self.__ctrlStatusBar)
-        self.__pub = rospy.Publisher('status_bar_pixels', Neopixels, queue_size=10)
+        self.__pub = rospy.Publisher('status_bar_pixels', Neopixels, queue_size=1)
         self.__flowState=False
         self.__flowCounter=0
         self.__delayCounter=0

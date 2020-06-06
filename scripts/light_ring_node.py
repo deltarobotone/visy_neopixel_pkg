@@ -10,7 +10,7 @@ class LightRingNode:
         self.__msg = Neopixels()
         self.__numPixels = 12
         self.__srv = rospy.Service('ctrl_light_ring', LightRing, self.__ctrlLightRing)
-        self.__pub = rospy.Publisher('light_ring_pixels', Neopixels, queue_size=10)
+        self.__pub = rospy.Publisher('light_ring_pixels', Neopixels, queue_size=1)
         self.__ctrlParam = None
 
         self.__ctrlFullState=False
