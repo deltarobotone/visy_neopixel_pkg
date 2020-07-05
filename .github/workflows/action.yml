@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install neopixel lib
-        run: sudo pip3 install rpi_ws281x adafruit-circuitpython-neopixel
+        run: sudo apt-get install python3-setuptools && sudo pip3 install rpi_ws281x adafruit-circuitpython-neopixel
       - uses: actions/checkout@v1
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{matrix.env}}
