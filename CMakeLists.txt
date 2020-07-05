@@ -15,8 +15,8 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(CATKIN_DEPENDS std_msgs rospy)
 
 catkin_install_python(PROGRAMS
-  scripts/status_bar_node.py
-  scripts/light_ring_node.py
-  scripts/neo_pixel_node.py
+  scripts/${PROJECT_NAME}/status_bar_node.py
+  scripts/${PROJECT_NAME}/light_ring_node.py
+  scripts/${PROJECT_NAME}/neo_pixel_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
