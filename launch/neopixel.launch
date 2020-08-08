@@ -1,0 +1,7 @@
+<launch>
+
+    <node type="neo_pixel_node.py" pkg="visy_neopixel_pkg" name="neo_pixel_node" output="screen" respawn="true"/>
+    <node type="status_bar_node.py" pkg="visy_neopixel_pkg" name="status_bar_node" output="screen" respawn="true"/>
+    <node type="light_ring_node.py" pkg="visy_neopixel_pkg" name="light_ring_node" output="screen" respawn="true"/>
+
+</launch>
