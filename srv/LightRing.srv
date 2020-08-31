@@ -1,5 +1,6 @@
 #request constants
 int32 UNKNOWN = 0
+int32 SINGLE = 1
 int32 FULL = 10
 int32 BLINK_FULL = 20
 int32 BLINK_FULL_SLOW = 21
@@ -20,6 +21,7 @@ uint8 r
 uint8 g
 uint8 b
 uint8 w
+uint8 pos
 ---
 #response constants
 
