@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-from visy_neopixel_pkg.srv import *
-from visy_neopixel_pkg.msg import *
+from visy_neopixel_pkg.srv import LightCtrl,LightCtrlResponse,PixelCtrl
+from visy_neopixel_pkg.msg import Neopixels,Neopixel
 import rospy
 
-class LightRingNode:
+class LightCtrlNode:
 
     def __init__(self):
         self.__msg = Neopixels()
-        self.__numPixels = 12
-        self.__srv = rospy.Service('ctrl_light_ring', LightRing, self.__ctrlLightRing)
-        self.__pub = rospy.Publisher('light_ring_pixels', Neopixels, queue_size=1)
+        self.__firstPixel = 0
+        self.__lastPixel = 0
+        self.__numPixel = 0
+
         self.__ctrlParam = None
 
         self.__ctrlFullState=False
@@ -28,10 +29,24 @@ class LightRingNode:
         self.__fadeValue = 0
         self.__fadeSpan = 0
 
-        for i in range(0,self.__numPixels):
-            self.__msg.pixels.append(Neopixel())
+        rospy.init_node("~")
+        self.__srv = rospy.Service('light_ctrl', LightCtrl, self.__lightCtrlCB)
+        self.__pub = rospy.Publisher('~/neo_pixels', Neopixels, queue_size=1)
 
         return None
+
+    def __getParams(self):
+        try:
+            self.__firstPixel = rospy.get_param('~first_pixel')
+            self.__lastPixel = rospy.get_param('~last_pixel')
+            if self.__firstPixel > 0: self.__firstPixel = self.__firstPixel - 1
+            self.__numPixel = self.__lastPixel-self.__firstPixel
+            for i in range(self.__numPixel):
+                self.__msg.pixels.append(Neopixel())
+            return True
+        except:
+            rospy.logerr("get params failed at light_ctrl_node")
+            return False
 
     def __resetCtrlStates(self):
         self.__ctrlFullState=False
@@ -49,7 +64,7 @@ class LightRingNode:
         self.__fadeValue = 0
         self.__fadeSpan = 0
 
-    def __ctrlLightRing(self,req):
+    def __lightCtrlCB(self,req):
 
         state = req.UNKNOWN
 
@@ -69,7 +84,7 @@ class LightRingNode:
         elif(req.ctrl >= req.SPIN_SINGLE_CW and req.ctrl < req.OFF):
             state = self.__ctrlSpin(req)
 
-        return LightRingResponse(state)
+        return LightCtrlResponse(state)
 
     def __ctrlFull(self,req):
 
@@ -102,7 +117,7 @@ class LightRingNode:
 
     def __full(self):
 
-        for i in range(0,self.__numPixels):
+        for i in range(0,self.__numPixel):
             self.__msg.pixels[i].r = self.__ctrlParam.r
             self.__msg.pixels[i].g = self.__ctrlParam.g
             self.__msg.pixels[i].b = self.__ctrlParam.b
@@ -111,7 +126,7 @@ class LightRingNode:
 
     def __off(self):
 
-        for i in range(0,self.__numPixels):
+        for i in range(0,self.__numPixel):
             self.__msg.pixels[i].r = 0
             self.__msg.pixels[i].g = 0
             self.__msg.pixels[i].b = 0
@@ -120,7 +135,7 @@ class LightRingNode:
 
     def __blink(self):
 
-        for i in range(0,self.__numPixels):
+        for i in range(0,self.__numPixel):
 
             if(self.__blinkState==True):
                 self.__msg.pixels[i].r = self.__ctrlParam.r
@@ -160,7 +175,7 @@ class LightRingNode:
         else:
             self.__fadeValue -= 1
 
-        for i in range(0,self.__numPixels):
+        for i in range(0,self.__numPixel):
             if(self.__ctrlParam.r-self.__fadeValue>0):self.__msg.pixels[i].r = self.__ctrlParam.r-self.__fadeValue
             if(self.__ctrlParam.g-self.__fadeValue>0):self.__msg.pixels[i].g = self.__ctrlParam.g-self.__fadeValue
             if(self.__ctrlParam.b-self.__fadeValue>0):self.__msg.pixels[i].b = self.__ctrlParam.b-self.__fadeValue
@@ -170,7 +185,7 @@ class LightRingNode:
 
     def __spinSingleCw(self):
 
-        for i in range(0,self.__numPixels):
+        for i in range(0,self.__numPixel):
 
             if(i == self.__spinCounter):
                 self.__msg.pixels[i].r = self.__ctrlParam.r
@@ -183,7 +198,7 @@ class LightRingNode:
                 self.__msg.pixels[i].b = 0
                 self.__msg.pixels[i].w = 0
 
-        if(self.__spinCounter==self.__numPixels-1):
+        if(self.__spinCounter==self.__numPixel-1):
             self.__spinCounter=0
         else:
             self.__spinCounter+=1
@@ -191,7 +206,7 @@ class LightRingNode:
 
     def __spinSingleInvCw(self):
 
-        for i in range(0,self.__numPixels):
+        for i in range(0,self.__numPixel):
 
             if(i != self.__spinCounter):
                 self.__msg.pixels[i].r = self.__ctrlParam.r
@@ -204,7 +219,7 @@ class LightRingNode:
                 self.__msg.pixels[i].b = 0
                 self.__msg.pixels[i].w = 0
 
-        if(self.__spinCounter==self.__numPixels-1):
+        if(self.__spinCounter==self.__numPixel-1):
             self.__spinCounter=0
         else:
             self.__spinCounter+=1
@@ -212,7 +227,7 @@ class LightRingNode:
 
     def __spinOneFreeCw(self):
 
-        for i in range(0,self.__numPixels):
+        for i in range(0,self.__numPixel):
 
             if(i % 2 != self.__spinCounter):
                 self.__msg.pixels[i].r = self.__ctrlParam.r
@@ -233,7 +248,7 @@ class LightRingNode:
 
     def __spinDoubleTop(self):
 
-        for i in range(0,self.__numPixels/2):
+        for i in range(0,self.__numPixel/2):
 
             if(i == self.__spinCounter):
                 self.__msg.pixels[i].r = self.__ctrlParam.r
@@ -241,26 +256,26 @@ class LightRingNode:
                 self.__msg.pixels[i].b = self.__ctrlParam.b
                 self.__msg.pixels[i].w = self.__ctrlParam.w
 
-                self.__msg.pixels[self.__numPixels-i-1].r = self.__ctrlParam.r
-                self.__msg.pixels[self.__numPixels-i-1].g = self.__ctrlParam.g
-                self.__msg.pixels[self.__numPixels-i-1].b = self.__ctrlParam.b
-                self.__msg.pixels[self.__numPixels-i-1].w = self.__ctrlParam.w
+                self.__msg.pixels[self.__numPixel-i-1].r = self.__ctrlParam.r
+                self.__msg.pixels[self.__numPixel-i-1].g = self.__ctrlParam.g
+                self.__msg.pixels[self.__numPixel-i-1].b = self.__ctrlParam.b
+                self.__msg.pixels[self.__numPixel-i-1].w = self.__ctrlParam.w
             else:
                 self.__msg.pixels[i].r = 0
                 self.__msg.pixels[i].g = 0
                 self.__msg.pixels[i].b = 0
                 self.__msg.pixels[i].w = 0
 
-                self.__msg.pixels[self.__numPixels-i-1].r = 0
-                self.__msg.pixels[self.__numPixels-i-1].g = 0
-                self.__msg.pixels[self.__numPixels-i-1].b = 0
-                self.__msg.pixels[self.__numPixels-i-1].w = 0
+                self.__msg.pixels[self.__numPixel-i-1].r = 0
+                self.__msg.pixels[self.__numPixel-i-1].g = 0
+                self.__msg.pixels[self.__numPixel-i-1].b = 0
+                self.__msg.pixels[self.__numPixel-i-1].w = 0
 
         if(self.__direction == 0): self.__spinCounter+=1
         else: self.__spinCounter-=1
 
 
-        if(self.__spinCounter==self.__numPixels/2-1 or self.__spinCounter==0):
+        if(self.__spinCounter==self.__numPixel/2-1 or self.__spinCounter==0):
             if(self.__direction == 0): self.__direction = 1
             else: self.__direction = 0
 
@@ -319,6 +334,8 @@ class LightRingNode:
         else:
             self.__off()
 
+        self.__msg.first = self.__firstPixel
+        self.__msg.last = self.__lastPixel
         self.__pub.publish(self.__msg)
         return
 
@@ -331,12 +348,14 @@ class LightRingNode:
             return False
 
     def run(self):
-        rospy.init_node("light_ring_node")
         rate = rospy.Rate(10)
-        while not rospy.is_shutdown():
-            self.__step()
-            rate.sleep()
+        if self.__getParams() == True:
+            while not rospy.is_shutdown():
+                self.__step()
+                rate.sleep()
+        else:
+            rospy.logerr("failed to start light_ctrl_node")
 
 if __name__ == "__main__":
-    lightRingNode = LightRingNode()
-    lightRingNode.run()
+    lightCtrlNode = LightCtrlNode()
+    lightCtrlNode.run()

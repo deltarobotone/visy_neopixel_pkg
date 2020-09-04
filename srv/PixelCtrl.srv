@@ -1,0 +1,9 @@
+#request constants
+
+#request fields
+Neopixels neopixels
+---
+#response constants
+
+#response fields
+int32 state

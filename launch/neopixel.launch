@@ -1,7 +1,17 @@
 <launch>
 
-    <node type="neo_pixel_node.py" pkg="visy_neopixel_pkg" name="neo_pixel_node" output="screen" respawn="true"/>
-    <node type="status_bar_node.py" pkg="visy_neopixel_pkg" name="status_bar_node" output="screen" respawn="true"/>
-    <node type="light_ring_node.py" pkg="visy_neopixel_pkg" name="light_ring_node" output="screen" respawn="true"/>
+    <node type="neo_pixel_node.py" pkg="visy_neopixel_pkg" name="neo_pixel_node" output="screen" >
+      <param name="number_of_pixels" value="20"/>
+    </node>
+
+    <node type="light_ctrl_node.py" pkg="visy_neopixel_pkg" name="status_bar_node" output="screen" ns="status_bar_node">
+      <param name="first_pixel" value="1"/>
+      <param name="last_pixel" value="8"/>
+    </node>
+
+    <node type="light_ctrl_node.py" pkg="visy_neopixel_pkg" name="light_ring_node" output="screen" ns="light_ring_node">
+      <param name="first_pixel" value="9"/>
+      <param name="last_pixel" value="20"/>
+    </node>
 
 </launch>
