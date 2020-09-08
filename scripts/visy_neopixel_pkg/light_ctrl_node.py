@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Light Control Node for Vision System."""
 
-from visy_neopixel_pkg.srv import LightCtrl,LightCtrlResponse,PixelCtrl
+from visy_neopixel_pkg.srv import LightCtrl,LightCtrlResponse,PixelCtrl,PixelCtrlResponse
 from visy_neopixel_pkg.msg import Neopixels,Neopixel
 import rospy
 
@@ -20,6 +20,7 @@ class LightCtrlNode:
         self.__ctrlSpinState=False
         self.__ctrlBlinkState=False
         self.__ctrlFadeState=False
+        self.__ctrlPixel=False
 
         self.__delayCounter=0
         self.__direction = 0
@@ -46,7 +47,7 @@ class LightCtrlNode:
             self.__numPixel = self.__lastPixel-self.__firstPixel
             for i in range(self.__numPixel):
                 self.__msg.pixels.append(Neopixel())
-                rospy.loginfo("init pixel: " + str(i))
+                rospy.loginfo("init pixel: " + str(i+1))
             return True
         except Exception:
             rospy.logerr("get params failed at light_ctrl_node")
@@ -57,6 +58,7 @@ class LightCtrlNode:
         self.__ctrlSpinState=False
         self.__ctrlBlinkState=False
         self.__ctrlFadeState=False
+        self.__ctrlPixel=False
         self.__delayCounter=0
         self.__direction = 0
         self.__blinkState=False
@@ -65,9 +67,12 @@ class LightCtrlNode:
         self.__fadeSpan = 0
 
     def __pixelCtrlCB(self,req):
+        self.__resetCtrlStates()
         self.__off()
+
         if(req.pos > 0 and req.pos <= self.__lastPixel and req.pos >= self.__firstPixel):
-            self.__msg.pixels[req.pos] = req.pixel
+            self.__msg.pixels[req.pos-1] = req.pixel
+            self.__ctrlPixel=True
             return PixelCtrlResponse(True)
         else:
             return PixelCtrlResponse(False)
@@ -130,7 +135,6 @@ class LightCtrlNode:
         return
 
     def __off(self):
-
         for i in range(0,self.__numPixel):
             self.__msg.pixels[i] = Neopixel()
         return
@@ -142,7 +146,7 @@ class LightCtrlNode:
             if(self.__blinkState==True):
                 self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = Neopixel()
+                self.__msg.pixels[i] = Neopixel()
 
         if(self.__blinkState==False):
             self.__blinkState=True
@@ -298,7 +302,7 @@ class LightCtrlNode:
 
         #OFF
         else:
-            self.__off()
+            if (self.__ctrlPixel==False): self.__off()
 
         self.__msg.first = self.__firstPixel
         self.__msg.last = self.__lastPixel

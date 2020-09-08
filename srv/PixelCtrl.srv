@@ -2,7 +2,7 @@
 
 #request fields
 int32 pos
-Neopixel neopixel
+Neopixel pixel
 ---
 #response constants
 
