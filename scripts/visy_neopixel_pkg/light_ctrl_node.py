@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Light Control Node for Vision System."""
 
 from visy_neopixel_pkg.srv import LightCtrl,LightCtrlResponse,PixelCtrl
 from visy_neopixel_pkg.msg import Neopixels,Neopixel
@@ -7,6 +8,7 @@ import rospy
 class LightCtrlNode:
 
     def __init__(self):
+        """Class provides ROS Node for light control functions."""
         self.__msg = Neopixels()
         self.__firstPixel = 0
         self.__lastPixel = 0
@@ -43,8 +45,9 @@ class LightCtrlNode:
             self.__numPixel = self.__lastPixel-self.__firstPixel
             for i in range(self.__numPixel):
                 self.__msg.pixels.append(Neopixel())
+                rospy.loginfo("init pixel: " + str(i))
             return True
-        except:
+        except Exception:
             rospy.logerr("get params failed at light_ctrl_node")
             return False
 
@@ -319,13 +322,13 @@ class LightCtrlNode:
                if(self.__delay(5)): self.__spinSingleInvCw()
 
             elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW):
-                if(self.__delay(5)): state = self.__spinOneFreeCw()
+                if(self.__delay(5)): self.__spinOneFreeCw()
 
             elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW_FAST):
                 self.__spinOneFreeCw()
 
             elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW_SLOW):
-                if(self.__delay(10)): state = self.__spinOneFreeCw()
+                if(self.__delay(10)): self.__spinOneFreeCw()
 
             elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_DOUBLE_TOP):
                 self.__spinDoubleTop()

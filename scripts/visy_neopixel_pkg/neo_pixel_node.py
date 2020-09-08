@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Neopixel node"""
+"""Neopixel Node for Vision System."""
 
 import rospy
 
@@ -14,16 +14,17 @@ from visy_neopixel_pkg.msg import Neopixels
 class NeopixelNode:
 
     def __init__(self):
-        """Class provides ROS Node control neopixel hardware"""
+        """Class provides ROS Node to support neopixel hardware."""
         self.__numPixels = 0
         self.__init = False
-        rospy.Subscriber('neo_pixels', Neopixels, self.__ctrlPixelsCB)
+        rospy.init_node('~')
+        rospy.Subscriber('~/neo_pixels', Neopixels, self.__ctrlPixelsCB)
 
     def __getParams(self):
         try:
             self.__numPixels = rospy.get_param('~number_of_pixels')
             return True
-        except:
+        except Exception:
             rospy.logerr("get params failed at neo_pixel_node")
             return False
 
@@ -45,7 +46,7 @@ class NeopixelNode:
                         self.__pixels.show()
 
     def run(self):
-        rospy.init_node('neo_pixel_node', anonymous=True)
+        rate = rospy.Rate(10)
         if self.__getParams() == True and self.__setupPixels() == True:
             self.__init = True
             while not rospy.is_shutdown():
