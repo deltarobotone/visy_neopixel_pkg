@@ -1,9 +1,10 @@
 #request constants
 
 #request fields
-Neopixels neopixels
+int32 pos
+Neopixel neopixel
 ---
 #response constants
 
 #response fields
-int32 state
+bool state

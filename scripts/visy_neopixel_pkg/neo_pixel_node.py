@@ -35,7 +35,7 @@ class NeopixelNode:
                 self.__pixels[i]=(0,0,0,0)
             self.__pixels.show()
             return True
-        except:
+        except Exception:
             rospy.logerr("setup failed at neo_pixel_node")
             return False
 

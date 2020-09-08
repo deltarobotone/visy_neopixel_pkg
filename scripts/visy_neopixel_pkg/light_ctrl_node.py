@@ -33,6 +33,7 @@ class LightCtrlNode:
 
         rospy.init_node("~")
         self.__srv = rospy.Service('light_ctrl', LightCtrl, self.__lightCtrlCB)
+        self.__srv = rospy.Service('pixel_ctrl', PixelCtrl, self.__pixelCtrlCB)
         self.__pub = rospy.Publisher('~/neo_pixels', Neopixels, queue_size=1)
 
         return None
@@ -56,22 +57,27 @@ class LightCtrlNode:
         self.__ctrlSpinState=False
         self.__ctrlBlinkState=False
         self.__ctrlFadeState=False
-
         self.__delayCounter=0
         self.__direction = 0
-
         self.__blinkState=False
-
         self.__spinCounter=0
-
         self.__fadeValue = 0
         self.__fadeSpan = 0
 
+    def __pixelCtrlCB(self,req):
+        self.__off()
+        if(req.pos > 0 and req.pos <= self.__lastPixel and req.pos >= self.__firstPixel):
+            self.__msg.pixels[req.pos] = req.pixel
+            return PixelCtrlResponse(True)
+        else:
+            return PixelCtrlResponse(False)
+
+
     def __lightCtrlCB(self,req):
 
-        state = req.UNKNOWN
-
         self.__off()
+
+        state = req.OFF
 
         self.__resetCtrlStates()
 
@@ -119,21 +125,14 @@ class LightCtrlNode:
         return req.ctrl
 
     def __full(self):
-
         for i in range(0,self.__numPixel):
-            self.__msg.pixels[i].r = self.__ctrlParam.r
-            self.__msg.pixels[i].g = self.__ctrlParam.g
-            self.__msg.pixels[i].b = self.__ctrlParam.b
-            self.__msg.pixels[i].w = self.__ctrlParam.w
+            self.__msg.pixels[i] = self.__ctrlParam.pixel
         return
 
     def __off(self):
 
         for i in range(0,self.__numPixel):
-            self.__msg.pixels[i].r = 0
-            self.__msg.pixels[i].g = 0
-            self.__msg.pixels[i].b = 0
-            self.__msg.pixels[i].w = 0
+            self.__msg.pixels[i] = Neopixel()
         return
 
     def __blink(self):
@@ -141,15 +140,9 @@ class LightCtrlNode:
         for i in range(0,self.__numPixel):
 
             if(self.__blinkState==True):
-                self.__msg.pixels[i].r = self.__ctrlParam.r
-                self.__msg.pixels[i].g = self.__ctrlParam.g
-                self.__msg.pixels[i].b = self.__ctrlParam.b
-                self.__msg.pixels[i].w = self.__ctrlParam.w
+                self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = 0
-                self.__msg.pixels[i].g = 0
-                self.__msg.pixels[i].b = 0
-                self.__msg.pixels[i].w = 0
+                self.__msg.pixels[i].r = Neopixel()
 
         if(self.__blinkState==False):
             self.__blinkState=True
@@ -159,10 +152,11 @@ class LightCtrlNode:
 
     def __calcFadeSpan(self):
 
-        span = self.__ctrlParam.r
-        if(self.__ctrlParam.g>span):span = self.__ctrlParam.g
-        if(self.__ctrlParam.b>span):span = self.__ctrlParam.b
-        if(self.__ctrlParam.w>span):span = self.__ctrlParam.w
+        span = 0
+        if(self.__ctrlParam.pixel.r>span):span = self.__ctrlParam.pixel.r
+        if(self.__ctrlParam.pixel.g>span):span = self.__ctrlParam.pixel.g
+        if(self.__ctrlParam.pixel.b>span):span = self.__ctrlParam.pixel.b
+        if(self.__ctrlParam.pixel.w>span):span = self.__ctrlParam.pixel.w
 
         return span
 
@@ -179,10 +173,10 @@ class LightCtrlNode:
             self.__fadeValue -= 1
 
         for i in range(0,self.__numPixel):
-            if(self.__ctrlParam.r-self.__fadeValue>0):self.__msg.pixels[i].r = self.__ctrlParam.r-self.__fadeValue
-            if(self.__ctrlParam.g-self.__fadeValue>0):self.__msg.pixels[i].g = self.__ctrlParam.g-self.__fadeValue
-            if(self.__ctrlParam.b-self.__fadeValue>0):self.__msg.pixels[i].b = self.__ctrlParam.b-self.__fadeValue
-            if(self.__ctrlParam.w-self.__fadeValue>0):self.__msg.pixels[i].w = self.__ctrlParam.w-self.__fadeValue
+            if(self.__ctrlParam.pixel.r-self.__fadeValue>0):self.__msg.pixels[i].r = self.__ctrlParam.pixel.r-self.__fadeValue
+            if(self.__ctrlParam.pixel.g-self.__fadeValue>0):self.__msg.pixels[i].g = self.__ctrlParam.pixel.g-self.__fadeValue
+            if(self.__ctrlParam.pixel.b-self.__fadeValue>0):self.__msg.pixels[i].b = self.__ctrlParam.pixel.b-self.__fadeValue
+            if(self.__ctrlParam.pixel.w-self.__fadeValue>0):self.__msg.pixels[i].w = self.__ctrlParam.pixel.w-self.__fadeValue
 
         return
 
@@ -191,15 +185,9 @@ class LightCtrlNode:
         for i in range(0,self.__numPixel):
 
             if(i == self.__spinCounter):
-                self.__msg.pixels[i].r = self.__ctrlParam.r
-                self.__msg.pixels[i].g = self.__ctrlParam.g
-                self.__msg.pixels[i].b = self.__ctrlParam.b
-                self.__msg.pixels[i].w = self.__ctrlParam.w
+                self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = 0
-                self.__msg.pixels[i].g = 0
-                self.__msg.pixels[i].b = 0
-                self.__msg.pixels[i].w = 0
+                self.__msg.pixels[i].r = Neopixel()
 
         if(self.__spinCounter==self.__numPixel-1):
             self.__spinCounter=0
@@ -212,15 +200,9 @@ class LightCtrlNode:
         for i in range(0,self.__numPixel):
 
             if(i != self.__spinCounter):
-                self.__msg.pixels[i].r = self.__ctrlParam.r
-                self.__msg.pixels[i].g = self.__ctrlParam.g
-                self.__msg.pixels[i].b = self.__ctrlParam.b
-                self.__msg.pixels[i].w = self.__ctrlParam.w
+                self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = 0
-                self.__msg.pixels[i].g = 0
-                self.__msg.pixels[i].b = 0
-                self.__msg.pixels[i].w = 0
+                self.__msg.pixels[i].r = Neopixel()
 
         if(self.__spinCounter==self.__numPixel-1):
             self.__spinCounter=0
@@ -233,15 +215,9 @@ class LightCtrlNode:
         for i in range(0,self.__numPixel):
 
             if(i % 2 != self.__spinCounter):
-                self.__msg.pixels[i].r = self.__ctrlParam.r
-                self.__msg.pixels[i].g = self.__ctrlParam.g
-                self.__msg.pixels[i].b = self.__ctrlParam.b
-                self.__msg.pixels[i].w = self.__ctrlParam.w
+                self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = 0
-                self.__msg.pixels[i].g = 0
-                self.__msg.pixels[i].b = 0
-                self.__msg.pixels[i].w = 0
+                self.__msg.pixels[i].r = Neopixel()
 
         if(self.__spinCounter==1):
             self.__spinCounter=0
@@ -254,25 +230,12 @@ class LightCtrlNode:
         for i in range(0,self.__numPixel/2):
 
             if(i == self.__spinCounter):
-                self.__msg.pixels[i].r = self.__ctrlParam.r
-                self.__msg.pixels[i].g = self.__ctrlParam.g
-                self.__msg.pixels[i].b = self.__ctrlParam.b
-                self.__msg.pixels[i].w = self.__ctrlParam.w
+                self.__msg.pixels[i] = self.__ctrlParam.pixel
+                self.__msg.pixels[self.__numPixel-i-1] = self.__ctrlParam.pixel
 
-                self.__msg.pixels[self.__numPixel-i-1].r = self.__ctrlParam.r
-                self.__msg.pixels[self.__numPixel-i-1].g = self.__ctrlParam.g
-                self.__msg.pixels[self.__numPixel-i-1].b = self.__ctrlParam.b
-                self.__msg.pixels[self.__numPixel-i-1].w = self.__ctrlParam.w
             else:
-                self.__msg.pixels[i].r = 0
-                self.__msg.pixels[i].g = 0
-                self.__msg.pixels[i].b = 0
-                self.__msg.pixels[i].w = 0
-
-                self.__msg.pixels[self.__numPixel-i-1].r = 0
-                self.__msg.pixels[self.__numPixel-i-1].g = 0
-                self.__msg.pixels[self.__numPixel-i-1].b = 0
-                self.__msg.pixels[self.__numPixel-i-1].w = 0
+                self.__msg.pixels[i] = Neopixel()
+                self.__msg.pixels[self.__numPixel-i-1] = Neopixel()
 
         if(self.__direction == 0): self.__spinCounter+=1
         else: self.__spinCounter-=1
