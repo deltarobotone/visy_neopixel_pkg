@@ -17,6 +17,7 @@ class NeopixelNode:
         """Class provides ROS Node to support neopixel hardware."""
         self.__numPixels = 0
         self.__init = False
+        self.__pixels = ""
         rospy.init_node('neo_pixel_node')
         rospy.Subscriber('neo_pixels', Neopixels, self.__ctrlPixelsCB)
 
