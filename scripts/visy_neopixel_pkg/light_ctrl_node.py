@@ -187,7 +187,7 @@ class LightCtrlNode:
             if(i == self.__spinCounter):
                 self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = Neopixel()
+                self.__msg.pixels[i] = Neopixel()
 
         if(self.__spinCounter==self.__numPixel-1):
             self.__spinCounter=0
@@ -202,7 +202,7 @@ class LightCtrlNode:
             if(i != self.__spinCounter):
                 self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = Neopixel()
+                self.__msg.pixels[i] = Neopixel()
 
         if(self.__spinCounter==self.__numPixel-1):
             self.__spinCounter=0
@@ -217,7 +217,7 @@ class LightCtrlNode:
             if(i % 2 != self.__spinCounter):
                 self.__msg.pixels[i] = self.__ctrlParam.pixel
             else:
-                self.__msg.pixels[i].r = Neopixel()
+                self.__msg.pixels[i] = Neopixel()
 
         if(self.__spinCounter==1):
             self.__spinCounter=0
