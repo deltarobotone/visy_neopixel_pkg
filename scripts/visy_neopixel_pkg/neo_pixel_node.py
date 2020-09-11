@@ -42,7 +42,7 @@ class NeopixelNode:
     def __ctrlPixelsCB(self,data):
         for i in range(data.first,data.last):
             if self.__init == True :
-                self.__pixels[i] = (data.pixels[i].r,data.pixels[i].g,data.pixels[i].b,data.pixels[i].w)
+                self.__pixels[i] = (data.pixels[i-data.first].r,data.pixels[i-data.first].g,data.pixels[i-data.first].b,data.pixels[i-data.first].w)
                 self.__pixels.show()
 
     def run(self):
@@ -51,7 +51,6 @@ class NeopixelNode:
             if self.__setupPixels() == True:
                 self.__init = True
                 while not rospy.is_shutdown():
-                    self.__step()
                     rate.sleep()
         else:
             rospy.logerr("failed to start neo_pixel_node")
