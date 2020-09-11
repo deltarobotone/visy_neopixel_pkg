@@ -299,10 +299,10 @@ class LightCtrlNode:
 
             elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_DOUBLE_TOP):
                 self.__spinDoubleTop()
-
         #OFF
         else:
-            if (self.__ctrlPixel==False): self.__off()
+            if (self.__ctrlPixel==False): 
+                self.__off()
 
         self.__msg.first = self.__firstPixel
         self.__msg.last = self.__lastPixel
