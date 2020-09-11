@@ -64,7 +64,8 @@ class LightCtrlNode:
 
     def __pixelCtrlCB(self,req):
         self.__resetCtrlStates()
-        self.__off()
+        if(req.cleanup == True):
+            self.__off()
 
         if(req.pos > 0 and req.pos <= self.__lastPixel-self.__firstPixel):
             self.__msg.pixels[req.pos-1] = req.pixel
@@ -72,7 +73,6 @@ class LightCtrlNode:
             return PixelCtrlResponse(True)
         else:
             return PixelCtrlResponse(False)
-
 
     def __lightCtrlCB(self,req):
 

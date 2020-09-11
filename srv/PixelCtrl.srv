@@ -3,6 +3,7 @@
 #request fields
 int32 pos
 Neopixel pixel
+bool cleanup
 ---
 #response constants
 
