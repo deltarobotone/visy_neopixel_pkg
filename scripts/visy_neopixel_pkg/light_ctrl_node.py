@@ -70,7 +70,7 @@ class LightCtrlNode:
         self.__resetCtrlStates()
         self.__off()
 
-        if(req.pos > 0 and req.pos <= self.__lastPixel and req.pos >= self.__firstPixel):
+        if(req.pos > 0 and req.pos <= self.__lastPixel-self.__firstPixel):
             self.__msg.pixels[req.pos-1] = req.pixel
             self.__ctrlPixel=True
             return PixelCtrlResponse(True)

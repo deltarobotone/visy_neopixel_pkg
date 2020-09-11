@@ -6,7 +6,7 @@ import rospy
 try:
     import board
     import neopixel
-except:
+except ImportError:
     rospy.logerr("import failed at neo_pixel_node")
 
 from visy_neopixel_pkg.msg import Neopixels
