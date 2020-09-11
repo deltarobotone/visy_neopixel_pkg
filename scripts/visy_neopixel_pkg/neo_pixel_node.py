@@ -17,8 +17,8 @@ class NeopixelNode:
         """Class provides ROS Node to support neopixel hardware."""
         self.__numPixels = 0
         self.__init = False
-        rospy.init_node('~')
-        rospy.Subscriber('~/neo_pixels', Neopixels, self.__ctrlPixelsCB)
+        rospy.init_node('neo_pixel_node')
+        rospy.Subscriber('neo_pixels', Neopixels, self.__ctrlPixelsCB)
 
     def __getParams(self):
         try:
@@ -41,17 +41,18 @@ class NeopixelNode:
 
     def __ctrlPixelsCB(self,data):
         for i in range(data.first,data.last):
-                if self.__init == True :
-                        self.__pixels[i] = (data.pixels[i].r,data.pixels[i].g,data.pixels[i].b,data.pixels[i].w)
-                        self.__pixels.show()
+            if self.__init == True :
+                self.__pixels[i] = (data.pixels[i].r,data.pixels[i].g,data.pixels[i].b,data.pixels[i].w)
+                self.__pixels.show()
 
     def run(self):
         rate = rospy.Rate(10)
-        if self.__getParams() == True and self.__setupPixels() == True:
-            self.__init = True
-            while not rospy.is_shutdown():
-                self.__step()
-                rate.sleep()
+        if self.__getParams() == True:
+            if self.__setupPixels() == True:
+                self.__init = True
+                while not rospy.is_shutdown():
+                    self.__step()
+                    rate.sleep()
         else:
             rospy.logerr("failed to start neo_pixel_node")
 
