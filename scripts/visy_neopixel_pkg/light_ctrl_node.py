@@ -21,14 +21,10 @@ class LightCtrlNode:
         self.__ctrlBlinkState=False
         self.__ctrlFadeState=False
         self.__ctrlPixel=False
-
         self.__delayCounter=0
         self.__direction = 0
-
         self.__blinkState=False
-
         self.__spinCounter=0
-
         self.__fadeValue = 0
         self.__fadeSpan = 0
 
@@ -95,7 +91,7 @@ class LightCtrlNode:
         elif(req.ctrl >= req.FADE_FULL and req.ctrl < req.SPIN_SINGLE_CW):
             state = self.__ctrlFade(req)
 
-        elif(req.ctrl >= req.SPIN_SINGLE_CW and req.ctrl < req.OFF):
+        elif(req.ctrl >= req.SPIN_SINGLE_CW and req.ctrl < req.NONE):
             state = self.__ctrlSpin(req)
 
         return LightCtrlResponse(state)
@@ -244,65 +240,61 @@ class LightCtrlNode:
         if(self.__direction == 0): self.__spinCounter+=1
         else: self.__spinCounter-=1
 
-
         if(self.__spinCounter==self.__numPixel/2-1 or self.__spinCounter==0):
             if(self.__direction == 0): self.__direction = 1
             else: self.__direction = 0
 
         return
 
-    def __step(self):
+    def __spin(self):
+        if(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_CW):
+            self.__spinSingleCw()
 
+        elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_CW_SLOW):
+            if(self.__delay(5)):self.__spinSingleCw()
+
+        elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_INV_CW):
+            self.__spinSingleInvCw()
+
+        elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_INV_CW_SLOW):
+           if(self.__delay(5)): self.__spinSingleInvCw()
+
+        elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW):
+            if(self.__delay(5)): self.__spinOneFreeCw()
+
+        elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW_FAST):
+            self.__spinOneFreeCw()
+
+        elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW_SLOW):
+            if(self.__delay(10)): self.__spinOneFreeCw()
+
+        elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_DOUBLE_TOP):
+            self.__spinDoubleTop()
+        return
+
+    def __step(self):
         #FULL
         if (self.__ctrlFullState==True):
             if(self.__ctrlParam.ctrl == self.__ctrlParam.FULL):
                 self.__full()
-
         #BLINK
         elif (self.__ctrlBlinkState==True):
             if(self.__ctrlParam.ctrl == self.__ctrlParam.BLINK_FULL):
                 self.__blink()
-
             elif(self.__ctrlParam.ctrl == self.__ctrlParam.BLINK_FULL_SLOW):
                 if(self.__delay(5)):self.__blink()
-
         #FADE
         elif (self.__ctrlFadeState==True):
             if(self.__ctrlParam.ctrl == self.__ctrlParam.FADE_FULL):
                 self.__fade()
-
             elif(self.__ctrlParam.ctrl == self.__ctrlParam.FADE_FULLL_SLOW):
                 if(self.__delay(5)):self.__fade()
-
         #SPIN
         elif (self.__ctrlSpinState==True):
-            if(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_CW):
-                self.__spinSingleCw()
-
-            elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_CW_SLOW):
-                if(self.__delay(5)):self.__spinSingleCw()
-
-            elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_INV_CW):
-                self.__spinSingleInvCw()
-
-            elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_SINGLE_INV_CW_SLOW):
-               if(self.__delay(5)): self.__spinSingleInvCw()
-
-            elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW):
-                if(self.__delay(5)): self.__spinOneFreeCw()
-
-            elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW_FAST):
-                self.__spinOneFreeCw()
-
-            elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_ONE_FREE_CW_SLOW):
-                if(self.__delay(10)): self.__spinOneFreeCw()
-
-            elif(self.__ctrlParam.ctrl == self.__ctrlParam.SPIN_DOUBLE_TOP):
-                self.__spinDoubleTop()
+            self.__spin()
         #OFF
-        else:
-            if (self.__ctrlPixel==False): 
-                self.__off()
+        elif (self.__ctrlPixel==False):
+            self.__off()
 
         self.__msg.first = self.__firstPixel
         self.__msg.last = self.__lastPixel

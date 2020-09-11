@@ -13,6 +13,7 @@ int32 SPIN_ONE_FREE_CW = 60
 int32 SPIN_ONE_FREE_CW_SLOW = 61
 int32 SPIN_ONE_FREE_CW_FAST = 62
 int32 SPIN_DOUBLE_TOP = 70
+int32 NONE = 100
 #request fields
 int32 ctrl
 Neopixel pixel
