@@ -40,9 +40,9 @@ class LightCtrlNode:
 
     def __getParams(self):
         try:
-            #Number of first pixel in row. Seperate control nodes if multiple neopixel devices are connected in row.
+            #Number of first pixel in row. If multiple neopixel devices are connected in row this param is for seperating the devices.
             self.__firstPixel = rospy.get_param('~first_pixel')
-            #Number of last pixel in row. Seperate control nodes if multiple neopixel devices are connected in row.
+            #Number of last pixel in row. If multiple neopixel devices are connected in row this param is for seperating the devices.
             self.__lastPixel = rospy.get_param('~last_pixel')
             if self.__firstPixel > 0: self.__firstPixel = self.__firstPixel - 1
             self.__numPixel = self.__lastPixel-self.__firstPixel

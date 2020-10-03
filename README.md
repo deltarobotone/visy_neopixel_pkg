@@ -6,7 +6,7 @@ ROS package for vision system (visy) to control neopixels at statusbar and light
 
 ### neo_pixel_node.py
 
-ROS node connects neopixel devices like neopixel ring to ROS. Node provides subscriber and message to control neopixel hardware. If multiple neopixel devices are connected in row count al pixels and use param to define it. Use only one node to connect all pixels to ROS. Setup light control nodes for every device to control the pixels. Example at neopixel.launch at this package.
+ROS node connects neopixel devices like neopixel ring to ROS. Node provides subscriber and message to control neopixel hardware. If multiple neopixel devices are connected in row count all pixels and use param to define it. Use only one node to connect all pixels to ROS. Setup light control nodes for every device to control the pixels. Example: neopixel.launch at this package.
 
 #### Parameters
 
@@ -22,7 +22,7 @@ Get neopixel control states from light control nodes.
 
 ### light_ctrl_node.py
 
-ROS node to control neopixel devices via predefined light functions like spin, fade, blink, etc. If multiple neopixel devices are connected in row start one of this nodes for every neopixel device and define first and last pixel in row. Count all pixels and set as param at neopixel node. Example at neopixel.launch at this package.
+ROS node to control neopixel devices via predefined light functions like spin, fade, blink, etc. If multiple neopixel devices are connected in row start one of this nodes for every neopixel device and define first and last pixel in row. Count all pixels and set as param at neopixel node. Example: neopixel.launch at this package.
 
 #### Advertised Services
 
@@ -38,11 +38,11 @@ Service to control single pixel of a neopixel device. Control one pixel and let 
 
 ##### ~first_pixel (Required)
 
-Number of first pixel in row. Seperate control nodes if multiple neopixel devices are connected in row.
+Number of first pixel in row. If multiple neopixel devices are connected in row this param is for seperating the devices.
 
 ##### ~last_pixel (Required)
 
-Number of last pixel in row. Seperate control nodes if multiple neopixel devices are connected in row.
+Number of last pixel in row. If multiple neopixel devices are connected in row this param is for seperating the devices.
 
 #### Published topics
 
