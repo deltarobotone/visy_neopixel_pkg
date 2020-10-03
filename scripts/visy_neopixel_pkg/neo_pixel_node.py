@@ -19,10 +19,12 @@ class NeopixelNode:
         self.__init = False
         self.__pixels = ""
         rospy.init_node('neo_pixel_node')
+        #Get neopixel control states from light control nodes.
         rospy.Subscriber('neo_pixels', Neopixels, self.__ctrlPixelsCB)
 
     def __getParams(self):
         try:
+            #Full number of connected pixels. If multiple neopixel devices connected in row count all pixels.
             self.__numPixels = rospy.get_param('~number_of_pixels')
             return True
         except Exception:

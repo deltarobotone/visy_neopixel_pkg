@@ -29,15 +29,20 @@ class LightCtrlNode:
         self.__fadeSpan = 0
 
         rospy.init_node("~")
+        #Select predefined light control functions for neopixel. Provided light functions are FULL, SPIN_SINGLE_CW, FADE_FULL, BLINK_FULL etc.
         self.__srv = rospy.Service('light_ctrl', LightCtrl, self.__lightCtrlCB)
+        #Service to control single pixel of a neopixel device. Control one pixel and let the other pixels in state (cleanup=false).
         self.__srv = rospy.Service('pixel_ctrl', PixelCtrl, self.__pixelCtrlCB)
+        #Publishes control states to neopixel node which connects the state to hardware.
         self.__pub = rospy.Publisher('~/neo_pixels', Neopixels, queue_size=1)
 
         return None
 
     def __getParams(self):
         try:
+            #Number of first pixel in row. Seperate control nodes if multiple neopixel devices are connected in row.
             self.__firstPixel = rospy.get_param('~first_pixel')
+            #Number of last pixel in row. Seperate control nodes if multiple neopixel devices are connected in row.
             self.__lastPixel = rospy.get_param('~last_pixel')
             if self.__firstPixel > 0: self.__firstPixel = self.__firstPixel - 1
             self.__numPixel = self.__lastPixel-self.__firstPixel
