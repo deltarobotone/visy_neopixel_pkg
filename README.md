@@ -4,6 +4,17 @@ ROS package for vision system (visy) to control neopixels
 
 ![CI](https://github.com/deltarobotone/visy_neopixel_pkg/workflows/CI/badge.svg?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/abd24320e658402a8bc27d9f3d8c80c6)](https://app.codacy.com/gh/deltarobotone/visy_neopixel_pkg?utm_source=github.com&utm_medium=referral&utm_content=deltarobotone/visy_neopixel_pkg&utm_campaign=Badge_Grade_Dashboard)
 
+This package is part of the Visy ROS workspace
+
+[<img src="https://raw.githubusercontent.com/deltarobotone/image_database/master/visy_doc/visy_doc%20(1).PNG" width="1000">](https://raw.githubusercontent.com/deltarobotone/image_database/master/visy_doc/visy_doc%20(1).PNG)
+
+- [visy_sorting_app_pkg](https://github.com/deltarobotone/visy_sorting_app_pkg)
+- [visy_detector_pkg](https://github.com/deltarobotone/visy_detector_pkg)
+- [one_easy_protocol_pkg](https://github.com/deltarobotone/one_easy_protocol_pkg)
+- [one_easy_protocol_pkg](https://github.com/deltarobotone/one_easy_protocol_pkg)
+- [visy_neopixel_pkg](https://github.com/deltarobotone/visy_neopixel_pkg)
+- [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node)
+
 ## Nodes
 
 ### neo_pixel_node.py
